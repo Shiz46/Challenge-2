@@ -1,45 +1,42 @@
 class Image
     attr_accessor :image
-
   def initialize(image)
-      @image = image 
-  end 
+    @image = image 
+  end
+
 
   def output_image
-    @image.each do |row| 
-      # loop the arrays and displays them in rows
-      puts row.join 
-    end 
-  end 
-  
-  def find_ones
-    # this locates and stores all ones 
-    blur = []
-    @rows.each_with_index do |row, row_index|
-      row.each_with_index do |cell, column_index|
-        if cell ==1
-          blur << [row_index,column_index]
-        end 
-      end 
-    end 
-  end 
+    @image.each do |row|
+      #loop the arrays and displays them in rows 
+      puts row.join
+    end
+  end
 
+  def blur!(distance=1)
+    distance.times do
+      blur_image!
+    end
+  end
 
-  def blur_image! 
-    blur_image.each do |blur|
-      @image[blur[0]][blur[1]+1] = 1 if blur [1] + 1 <= @image[blur[0]].length - 1
-      @image[blur[0]][blur[1]-1]= 1 if blur[1] - 1 >= 0 
-      @image[blur[0] + 1][blur[1]] = 1 if blur [0] + 1 <= image.length -1 
-      @image[blur[0]-1][blur[1]]= 1 if blur [0] - 1 >= 0 
+  private
 
-   end 
-  end 
+    def blur_image!
+      blur_image = []
+      @image.each_with_index do |row, i|
+        row.each_with_index do |x, row_i|
+          blur_image << [i, row_i] if x == 1
+        end
+      end
 
-end 
+      blur_image.each do |change|
+        @image[change[0]][change[1] + 1] = 1 if change[1] + 1 <= @image[change[0]].length - 1
+        @image[change[0]][change[1] - 1] = 1 if change[1] - 1 >= 0
+        @image[change[0] + 1][change[1]] = 1 if change[0] + 1 <= @image.length - 1
+        @image[change[0] - 1][change[1]] = 1 if change[0] - 1 >= 0
+      end
+    end
 
-
-  
-
+end
 
      row1 = [0,0,0,0]
      row2 = [0,1,0,0]
@@ -48,9 +45,5 @@ end
     
    image = Image.new([row1,row2,row3,row4])
 
-#image.output_image
-
-#puts 
-image.blur_image!
-
-
+image.blur!(2)
+image.output_image
